@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+        }
+
+        .countdown {
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 20px; /* Add space between the buttons */
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #3498db;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .timing-select {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #2980b9;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+            border: none;
+            background-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <div class="countdown" id="countdown">00:00:00</div>
+    <div class="buttons">
+        <button id="startBtn">Start</button>
+        <button id="stopBtn" disabled>Stop/Reset</button>
+    </div>
+    <select class="timing-select" id="timingSelect">
+        <option value="60000">1 Minute</option>
+        <option value="300000">5 Minutes</option>
+        <option value="600000">10 Minutes</option>
+        <option value="6000000">100 Minutes</option>
+    </select>
+
+    <script>
+        const countdownElement = document.getElementById('countdown');
+        const startButton = document.getElementById('startBtn');
+        const stopButton = document.getElementById('stopBtn');
+        const timingSelect = document.getElementById('timingSelect');
+
+        let intervalId;
+
+        function startCountdown(duration) {
+            let seconds = duration / 1000;
+
+            intervalId = setInterval(function () {
+                const hours = Math.floor(seconds / 3600);
+                const minutes = Math.floor((seconds % 3600) / 60);
+                const remainingSeconds = seconds % 60;
+
+                countdownElement.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+
+                if (seconds <= 0) {
+                    clearInterval(intervalId);
+                    countdownElement.textContent = '00:00:00';
+                    startButton.disabled = false;
+                    stopButton.disabled = true;
+                }
+
+                seconds--;
+            }, 1000);
+        }
+
+        startButton.addEventListener('click', function () {
+            const selectedTiming = timingSelect.value;
+            startCountdown(selectedTiming);
+            startButton.disabled = true;
+            stopButton.disabled = false;
+        });
+
+        stopButton.addEventListener('click', function () {
+            clearInterval(intervalId);
+            countdownElement.textContent = '00:00:00';
+            startButton.disabled = false;
+            stopButton.disabled = true;
+        });
+    </script>
+</body>
+</html>
